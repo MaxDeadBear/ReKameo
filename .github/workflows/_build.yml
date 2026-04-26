@@ -14,7 +14,6 @@ on:
         default: ""
 
 env:
-  REXSDK_TAG: nightly-20260425-711d4d33
   ASSETS_REPO: ${{ vars.ASSETS_REPO }}
   ASSET_PATH: default.xex
   ASSET_CACHE_KEY: codegen-assets-v1
@@ -46,6 +45,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Install dependencies (Linux)
         if: matrix.platform == 'linux'
@@ -63,13 +64,16 @@ jobs:
           variant: sccache
           key: ${{ matrix.platform }}-amd64
 
-      - name: Download ReXGlue SDK (${{ env.REXSDK_TAG }})
+      - name: Build and install ReXGlue SDK
         shell: bash
         run: |
-          tag="${{ env.REXSDK_TAG }}"
-          url="https://github.com/rexglue/rexglue-sdk/releases/download/${tag}/rexglue-sdk-${tag}-${{ matrix.sdk_platform }}.zip"
-          curl -fL "$url" -o sdk.zip
-          unzip sdk.zip -d sdk
+          cmake --preset ${{ matrix.sdk_platform }} -S rexglue-sdk -B rexglue-sdk/out/build/${{ matrix.sdk_platform }} \
+            -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+            -DREXGLUE_BUILD_TESTS=OFF
+          cmake --build rexglue-sdk/out/build/${{ matrix.sdk_platform }} --config RelWithDebInfo -j
+          cmake --install rexglue-sdk/out/build/${{ matrix.sdk_platform }} --config RelWithDebInfo \
+            --prefix "${{ github.workspace }}/sdk/${{ matrix.sdk_dir }}"
 
       - name: Migrate (generate rexglue.cmake)
         shell: bash
