@@ -45,8 +45,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Install dependencies (Linux)
         if: matrix.platform == 'linux'
@@ -64,16 +62,15 @@ jobs:
           variant: sccache
           key: ${{ matrix.platform }}-amd64
 
-      - name: Build and install ReXGlue SDK
+      - name: Download ReXGlue SDK (latest nightly)
         shell: bash
         run: |
-          cmake --preset ${{ matrix.sdk_platform }} -S rexglue-sdk -B rexglue-sdk/out/build/${{ matrix.sdk_platform }} \
-            -DCMAKE_C_COMPILER_LAUNCHER=sccache \
-            -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
-            -DREXGLUE_BUILD_TESTS=OFF
-          cmake --build rexglue-sdk/out/build/${{ matrix.sdk_platform }} --config RelWithDebInfo -j
-          cmake --install rexglue-sdk/out/build/${{ matrix.sdk_platform }} --config RelWithDebInfo \
-            --prefix "${{ github.workspace }}/sdk/${{ matrix.sdk_dir }}"
+          asset=$(curl -fsSL "https://api.github.com/repos/rexglue/rexglue-sdk/releases?per_page=20" \
+            | python3 -c "import json,sys; r=json.load(sys.stdin); n=next(x for x in r if x['tag_name'].startswith('nightly-')); print(next(a['browser_download_url'] for a in n['assets'] if '${{ matrix.sdk_platform }}' in a['name']))")
+          curl -fL "$asset" -o sdk.zip
+          unzip sdk.zip -d sdk_tmp
+          mkdir -p sdk
+          mv sdk_tmp/*/ sdk/${{ matrix.sdk_dir }}
 
       - name: Migrate (generate rexglue.cmake)
         shell: bash
