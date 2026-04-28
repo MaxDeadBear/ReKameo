@@ -19,7 +19,7 @@ class KameoApp : public rex::ReXApp {
 
   static std::unique_ptr<rex::ui::WindowedApp> Create(
       rex::ui::WindowedAppContext& ctx) {
-    return std::unique_ptr<KameoApp>(new KameoApp(ctx, "kameo",
+    return std::unique_ptr<KameoApp>(new KameoApp(ctx, "kameorepowered",
         PPCImageConfig));
   }
 

@@ -58,11 +58,11 @@ extract-xiso -d assets "Kameo - Elements of Power (USA).iso"
 ### 4. Run codegen
 
 ```bash
-sdk/linux-amd64/bin/rexglue codegen kameo_config.toml
+sdk/linux-amd64/bin/rexglue codegen kameorepowered_config.toml
 ```
 
 ```powershell
-.\sdk\win-amd64\bin\rexglue.exe codegen .\kameo_config.toml
+.\sdk\win-amd64\bin\rexglue.exe codegen .\kameorepowered_config.toml
 ```
 
 ### 5. Run migrate (generates `generated/rexglue.cmake`)
@@ -114,7 +114,7 @@ The game defaults to English. Pass `--user_language <id>` to switch:
 | 7  | Korean     |
 
 ```bash
-./out/build/linux-amd64-release/kameo --user_language 6
+./out/build/linux-amd64-release/kameorepowered --user_language 6
 ```
 
 ### GPU selection
@@ -122,7 +122,7 @@ The game defaults to English. Pass `--user_language <id>` to switch:
 If you have multiple GPUs, force a specific one:
 
 ```bash
-./out/build/linux-amd64-release/kameo --vulkan_device 1
+./out/build/linux-amd64-release/kameorepowered --vulkan_device 1
 ```
 
 List available devices by running without the flag — they are printed to
@@ -131,7 +131,7 @@ the log on startup.
 ### Logging
 
 ```bash
-./out/build/linux-amd64-release/kameo --log_file kameo.log --log_level debug
+./out/build/linux-amd64-release/kameorepowered --log_file kameo.log --log_level debug
 ```
 
 ## Repo layout

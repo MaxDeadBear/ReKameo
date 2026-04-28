@@ -1,11 +1,11 @@
 
-# kameo - ReXGlue Recompiled Project
+# kameorepowered - ReXGlue Recompiled Project
 #
 # This file is yours to edit. 'rexglue migrate' will NOT overwrite it.
 # SDK boilerplate lives in generated/rexglue.cmake.
 
 cmake_minimum_required(VERSION 3.25)
-project(kameo LANGUAGES CXX)
+project(kameorepowered LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -31,16 +31,16 @@ set(KAMEO_SOURCES
 )
 
 if(WIN32)
-    add_executable(kameo WIN32 ${KAMEO_SOURCES})
+    add_executable(kameorepowered WIN32 ${KAMEO_SOURCES})
 else()
-    add_executable(kameo ${KAMEO_SOURCES})
+    add_executable(kameorepowered ${KAMEO_SOURCES})
 endif()
 
-rexglue_setup_target(kameo)
+rexglue_setup_target(kameorepowered)
 
-add_dependencies(kameo kameo_icon)
-target_include_directories(kameo PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+add_dependencies(kameorepowered kameo_icon)
+target_include_directories(kameorepowered PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 
-target_compile_options(kameo PRIVATE
+target_compile_options(kameorepowered PRIVATE
     -include "${CMAKE_CURRENT_SOURCE_DIR}/src/kameorepowered_hooks.h"
 )
