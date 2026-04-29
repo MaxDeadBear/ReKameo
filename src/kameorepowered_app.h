@@ -495,6 +495,16 @@ class KameorepoweredApp : public rex::ReXApp {
     if (lang == 0 || lang >= std::size(kLangFolders) || !kLangFolders[lang]) {
       lang = 1;  // Default to English if argument is missing or invalid.
     }
+    g_kameo_startup_language.store(static_cast<int32_t>(lang),
+                                   std::memory_order_relaxed);
+    // Prime g_kameo_audio_language so KameoOverrideAudioLanguage overrides
+    // XGetLanguage before the opening FMV plays. Without this, the game stores
+    // the system language (English) at 0x827556B4 and the Bink track selection
+    // uses English even when --user_language is non-English.
+    if (lang > 1) {
+      g_kameo_audio_language.store(static_cast<int32_t>(lang),
+                                   std::memory_order_relaxed);
+    }
     // No symlink needed for English (lang=1): the game hardcodes D:\english,
     // which already resolves to the English folder. Registering english->English
     // creates a cycle on case-insensitive filesystems.

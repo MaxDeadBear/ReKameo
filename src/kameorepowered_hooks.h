@@ -16,6 +16,7 @@ extern std::atomic<int32_t> g_kameo_audio_language;
 extern std::atomic<int32_t> g_kameo_volume_dirty;
 extern std::atomic<int32_t> g_kameo_language_dirty;
 extern std::atomic<int32_t> g_kameo_original_language;
+extern std::atomic<int32_t> g_kameo_startup_language;
 
 void KameoUnlockDlc(PPCRegister& r3);
 void KameoProcessPendingDlcSwapMid();

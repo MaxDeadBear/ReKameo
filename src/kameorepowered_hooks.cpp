@@ -31,6 +31,7 @@ std::atomic<int32_t> g_kameo_audio_language{-1};
 std::atomic<int32_t> g_kameo_volume_dirty{0};
 std::atomic<int32_t> g_kameo_language_dirty{0};
 std::atomic<int32_t> g_kameo_original_language{-1};
+std::atomic<int32_t> g_kameo_startup_language{1};
 
 namespace {
 
@@ -579,7 +580,18 @@ void KameoSetBinkLanguageTrackVolume(PPCRegister& r27, PPCRegister& r29) {
   }
 
   // Mirror the switch in sub_82264140 to find the language audio track index.
-  const uint32_t lang_code = REX_LOAD_U32(0x827556B4);
+  // The game initializes 0x827556B4 from XGetLanguage (system default = English)
+  // before the opening FMV plays, so we can't rely on it for startup language.
+  // Priority: runtime UI override (g_kameo_audio_language) > --user_language
+  // (g_kameo_startup_language) > game's XGetLanguage result (0x827556B4).
+  uint32_t lang_code = REX_LOAD_U32(0x827556B4);
+  const int32_t audio_lang = g_kameo_audio_language.load(std::memory_order_acquire);
+  const int32_t startup_lang = g_kameo_startup_language.load(std::memory_order_acquire);
+  if (audio_lang >= 1) {
+    lang_code = static_cast<uint32_t>(audio_lang);
+  } else if (startup_lang > 1) {
+    lang_code = static_cast<uint32_t>(startup_lang);
+  }
   uint32_t lang_track;
   switch (lang_code) {
     case 2:  lang_track = 18; break;  // Japanese
