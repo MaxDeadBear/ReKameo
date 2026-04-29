@@ -101,6 +101,13 @@ New-Item -ItemType Junction -Path out/build/win-amd64-release/assets -Target "$P
 
 ## Options
 
+Options can be persisted by adding them to `kameorepowered.toml` next to the game executable, for example:
+
+```toml
+vulkan_device = 1 # NVIDIA GPU
+user_language = 4 # French
+```
+
 ### Language selection
 
 The game defaults to English. Pass `--user_language <id>` to switch:

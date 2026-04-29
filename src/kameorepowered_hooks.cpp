@@ -19,8 +19,8 @@ extern "C" REX_FUNC(__imp__sub_8228A760);
 extern "C" REX_FUNC(__imp__sub_8230C320);
 extern "C" REX_FUNC(__imp__sub_826D21B0);
 
-std::atomic<uint32_t> g_kameo_infinite_energy_enabled{1};
-std::atomic<uint32_t> g_kameo_infinite_health_enabled{1};
+std::atomic<uint32_t> g_kameo_infinite_energy_enabled{0};
+std::atomic<uint32_t> g_kameo_infinite_health_enabled{0};
 
 std::atomic<int32_t> g_kameo_sfx_volume{100};
 std::atomic<int32_t> g_kameo_music_volume{100};

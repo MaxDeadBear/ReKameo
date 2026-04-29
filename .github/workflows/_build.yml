@@ -33,10 +33,10 @@ jobs:
         include:
           - platform: windows
             runner: windows-latest
-            preset: win-amd64-relwithdebinfo
+            preset: win-amd64-release
             sdk_platform: win-amd64
             sdk_dir: win-amd64
-            binary: out/build/win-amd64-relwithdebinfo/kameorepowered.exe
+            binary: out/build/win-amd64-release/kameorepowered.exe
             artifact_suffix: windows-x64
             artifact_ext: .exe
 
