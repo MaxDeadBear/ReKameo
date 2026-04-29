@@ -85,7 +85,9 @@ static void GuestFpExceptionHandler(int /*sig*/, siginfo_t* si, void* ctx) {
             g_kameo_fp_last_rip.store(
                 static_cast<uint64_t>(uc->uc_mcontext.gregs[REG_RIP]),
                 std::memory_order_release);
-            uc->uc_mcontext.fpregs->mxcsr |= _MM_MASK_MASK;
+            // Clear exception status flags (bits 0-5) and set all mask bits.
+            // Leaving status bits set causes an immediate re-fault on the next FP op.
+            uc->uc_mcontext.fpregs->mxcsr = (mxcsr & ~0x003Fu) | _MM_MASK_MASK;
             break;
         }
         default:
@@ -452,14 +454,6 @@ class KameorepoweredApp : public rex::ReXApp {
     SyncKameoDlcListForCustomModels();
 #ifdef _WIN32
     veh_handle_ = AddVectoredExceptionHandler(1, GuestFpExceptionHandler);
-#else
-    struct sigaction sa{};
-    sa.sa_sigaction = GuestFpExceptionHandler;
-    sa.sa_flags = SA_SIGINFO;
-    sigemptyset(&sa.sa_mask);
-    auto* old_sa = new struct sigaction{};
-    sigaction(SIGFPE, &sa, old_sa);
-    veh_handle_ = old_sa;
 #endif
   }
 
@@ -509,6 +503,16 @@ class KameorepoweredApp : public rex::ReXApp {
       std::string target = std::string("\\Device\\Harddisk0\\Partition1\\") + kLangFolders[lang];
       vfs->RegisterSymbolicLink("\\Device\\Harddisk0\\Partition1\\english", target);
     }
+#ifndef _WIN32
+    // Install after SDK setup so we override any SDK-installed SIGFPE handler.
+    struct sigaction sa{};
+    sa.sa_sigaction = GuestFpExceptionHandler;
+    sa.sa_flags = SA_SIGINFO;
+    sigemptyset(&sa.sa_mask);
+    auto* old_sa = new struct sigaction{};
+    sigaction(SIGFPE, &sa, old_sa);
+    veh_handle_ = old_sa;
+#endif
   }
   void OnCreateDialogs(rex::ui::ImGuiDrawer* drawer) override {
     kameo_model_dialog_ =
