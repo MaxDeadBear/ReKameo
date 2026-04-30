@@ -12,9 +12,9 @@ overlays, hooks) so the game runs natively and can be modded like a PC port.
 
 ## Using a pre-built release
 
-Get the latest stable build [here](https://github.com/MaxDeadBear/KameoRePowered/releases/latest).
+Get the latest stable build [here](https://github.com/birabittoh/KameoRePowered/releases/latest).
 
-Nightly builds are available [here](https://nightly.link/MaxDeadBear/KameoRePowered/workflows/ci/main?preview).
+Nightly builds are available [here](https://nightly.link/birabittoh/KameoRePowered/workflows/ci/main?preview).
 
 Just place the downloaded executable next to the extracted `assets` directory and run it.
 
@@ -35,7 +35,7 @@ scoop install llvm cmake ninja
 ### 1. Clone
 
 ```bash
-git clone https://github.com/MaxDeadBear/KameoRePowered.git
+git clone https://github.com/birabittoh/KameoRePowered.git
 cd KameoRePowered
 ```
 
